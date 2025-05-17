@@ -13,7 +13,22 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middlewares
-app.use(cors());
+const allowedOrigins = [
+    'http://localhost:5173/',     // frontend localHost
+    ''                          // for my fronted deployed URL
+    ]
+
+const corsOptions = {
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+        if(!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("not allowed by CORS"))
+        }
+    }
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
