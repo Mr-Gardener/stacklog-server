@@ -6,14 +6,16 @@ import {
     updatePost,
     deletePost
 } from "../controllers/postController";
-import { adminAuth } from '../middleware/adminAuth';
+import { verifyToken } from "../middleware/verifyToken";
+import { requireRole } from "../middleware/requireRole";
+
 
 const router = express.Router();
 
 router.get("/", getAllPosts);
 router.get("/:id", getPost);
-router.post("/", createPost);
-router.put("/:id",adminAuth, updatePost);
-router.delete("/:id",adminAuth, deletePost);
+router.post("/",verifyToken, requireRole("admin"), createPost);
+router.put("/:id",verifyToken, requireRole("admin"), updatePost);
+router.delete("/:id",verifyToken, requireRole("admin"), deletePost);
 
 export default router;

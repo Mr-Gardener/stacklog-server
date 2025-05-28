@@ -4,6 +4,9 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import postRoutes from "./routes/postRoutes"
 import commentRoutes from './routes/commentRoutes'
+import uploadRoutes from './routes/uploadRoutes'
+import path from "path";
+import authRoutes from "./routes/authRoute";
 
 // Load env variables
 dotenv.config();
@@ -36,7 +39,13 @@ app.get("/", (_req, res) => {
 
 app.use("/api/posts", postRoutes);
 
-app.use("/api/comments", commentRoutes)
+app.use("/api/comments", commentRoutes);
+
+app.use("/api/upload", uploadRoutes);
+
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+app.use("/api/auth", authRoutes);
 
 // DB + Server
 mongoose

@@ -6,14 +6,15 @@ import {
     deleteComment,
     rejectComment
 } from "../controllers/commentController";
-import { adminAuth  } from "../middleware/adminAuth";
+import { verifyToken } from "../middleware/verifyToken";
+import { requireRole } from "../middleware/requireRole";
 
 const router = express.Router();
 
 router.post("/:postId", createComment);  //anyone can comment
 router.get("/post/:postId", getCommentsForPost);  //public only approved comments
-router.put("/approve/:id", adminAuth, approveComment);   //admin only
-router.put("/reject/:id", adminAuth, rejectComment)
-router.delete("/:id", adminAuth, deleteComment);   //admin only
+router.put("/approve/:id", verifyToken, requireRole("admin"), approveComment);   //admin only
+router.put("/reject/:id", verifyToken, requireRole("admin"), rejectComment)
+router.delete("/:id", verifyToken, requireRole("admin"), deleteComment);   //admin only
 
 export default router;
