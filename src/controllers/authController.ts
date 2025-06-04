@@ -29,10 +29,11 @@ export const registerAdmin: RequestHandler = async (req, res) => {
   });
 
   res.status(201).json({ message: "Admin registered" });
-} catch (err){
-  console.error(err);
-  res.status(500).json({ message: "Server error"});
-}
+} catch (error) {
+  const err = error as Error;
+  console.error("Auth error:", err);
+  res.status(500).json({ message: "Something went wrong.", error: err.message });
+  }
 };
 
 export const loginUser: RequestHandler = async (req, res) => {
@@ -57,9 +58,17 @@ export const loginUser: RequestHandler = async (req, res) => {
       { expiresIn: "2h" }
     );
 
-    res.status(200).json({ token, role: user.role });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(200).json({ 
+      token, 
+       user: {
+            id: user._id,
+            email: user.email,
+            role: user.role,
+              }
+    });
+  } catch (error) {
+    const err = error as Error;
+    console.error("Auth error:", error);
+  res.status(500).json({ message: "Something went wrong.", error: err.message });
   }
 };

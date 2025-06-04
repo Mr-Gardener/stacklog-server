@@ -47,6 +47,11 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use("/api/auth", authRoutes);
 
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.originalUrl}`);
+    next();
+})
+
 // DB + Server
 mongoose
     .connect(process.env.MONGO_URI || "")

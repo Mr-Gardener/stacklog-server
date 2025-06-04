@@ -1,9 +1,14 @@
-import { Request, Response } from "express";
+import { Request, Response} from "express";
 import Post from "../models/Post";
+import { AuthRequest } from "../types/express";
 
-export const getAllPosts = async (_req: Request, res: Response) => {
-    const posts = await Post.find().sort({createdAt: -1});
-    res.json(posts);
+export const getAllPosts = async (req: Request, res: Response) => {
+  try {
+    const posts = await Post.find().sort({ createdAt: -1 }); 
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch posts" });
+  }
 };
 
 export const getPost = async(req: Request, res: Response) => {
@@ -15,10 +20,49 @@ export const getPost = async(req: Request, res: Response) => {
     }
 };
 
-export const createPost = async (req: Request, res: Response) => {
-    const {title, content, coverImage, tags } = req.body;
-    const newPost = await Post.create({ title, content, coverImage, tags });
-    res.status(201).json(newPost);
+export const getLatestPost = async (req: Request, res: Response) => {
+  try {
+    const latestPost = await Post.findOne()
+      .sort({ createdAt: -1 })
+      .populate("author", "name profileImage");
+
+    if (!latestPost) {
+      return res.status(404).json({ message: "No post found" });
+    }
+
+    res.status(200).json(latestPost);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const createPost = async (req: AuthRequest, res: Response) => {
+  const user = (req as any).user;
+
+  try {
+    const { title, content, author } = req.body;
+    const coverImageUrl = req.file?.path;
+
+    if (!coverImageUrl) {
+      return res.status(400).json({ message: "No image uploaded" });
+    }
+
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const newPost = await Post.create({
+      title,
+      content,
+      coverImage: coverImageUrl,
+      author: user.id,
+    });
+
+    return res.status(201).json({ message: "Post created", post: newPost });
+  } catch (error) {
+    return res.status(500).json({ message: "Error", error: (error as Error).message });
+  }
 };
 
 export const updatePost = async(req: Request, res: Response) => {
