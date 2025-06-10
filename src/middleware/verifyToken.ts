@@ -1,8 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-
-
-
 import { AuthRequest } from "../types/express/index";
 
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction) => {

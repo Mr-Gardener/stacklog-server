@@ -89,7 +89,7 @@ export const loginUser: RequestHandler = async (req, res) => {
 
     const user = await Admin.findOne({ email });
     if (!user) {
-      res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: "Invalid credentials" });
       return;
     }
 

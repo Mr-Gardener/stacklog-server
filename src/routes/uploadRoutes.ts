@@ -1,40 +1,22 @@
-import express, { Request, Response, RequestHandler } from "express";
-import multer, { FileFilterCallback } from "multer";
-import path from "path";
-
-interface MulterRequest extends Request {
-  file: Express.Multer.File;
-}
+import express from "express";
+import upload from "../middleware/multer";
+import { Request, Response } from "express";
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (_req, file, cb) => {
-    const uniqueName = `${Date.now()}-${file.originalname}`;
-    cb(null, uniqueName);
-  },
-});
-
-const upload = multer({storage});
-
-const handleUpload: RequestHandler = (req, res) => {
-    const typedReq = req as MulterRequest;
-
-    if (!typedReq.file) {
-        res.status(400).json({ message: "No file uploaded" });
-        return;
+router.post("/", upload.single("image"), async (req: Request, res: Response): Promise<void> => {
+  try {
+    const file = req.file;
+    if (!file) {
+      res.status(400).json({ message: "No file uploaded." });
+      return;
     }
 
-
-const filePath = `/uploads/${typedReq.file.filename}`;
-res.status(200).json({ url: filePath });
-};
-
-router.post("/", upload.single("image"), handleUpload);
-
-
+    // `req.file.path` should be the Cloudinary URL
+    res.status(200).json({ url: file.path });
+  } catch (error) {
+    res.status(500).json({ message: "Image upload failed", error: (error as Error).message });
+  }
+});
 
 export default router;

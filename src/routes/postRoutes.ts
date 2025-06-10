@@ -23,8 +23,7 @@ router.get("/:id", getPost);
 router.post(
   "/create",
   verifyToken,
-  requireRole("admin"),
-  upload.single("coverImage"),
+  requireRole("superAdmin", "authorAdmin"),
   (req, res, next) => {
     createPost(req, res).catch(next);
   }

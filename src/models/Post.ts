@@ -17,8 +17,8 @@ const PostSchema = new mongoose.Schema<IPost>(
     {
         title: {type: String, required: true},
         content: {type: String, required: true },
-        coverImage: String,
-        tags: [String],
+        coverImage: {type: String, required: true},
+        tags: {type: [String], required: true},
         author: { type: Schema.Types.ObjectId, ref: "Author", required: true },
     }, 
     {timestamps: true}
