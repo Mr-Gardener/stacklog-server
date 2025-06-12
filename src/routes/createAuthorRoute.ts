@@ -9,7 +9,10 @@ import { requireRole } from "../middleware/requireRole";
 
 const router = express.Router();
 
-router.post("/create-author",  verifyToken, requireRole("superAdmin"), createAuthorAdmin);
+router.post("/create-author", 
+  verifyToken, 
+  requireRole("superAdmin"), 
+  createAuthorAdmin);
 router.get("/authors", verifyToken, requireRole("superAdmin"), getAllAuthors);
 router.delete("/authors/:id",  verifyToken, requireRole("superAdmin"), deleteAuthor);
 

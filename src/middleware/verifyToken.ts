@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction) => {
   const token = req.cookies.access_token;
+  
   if (!token) {
      res.status(401).json({ message: "No token provided" });
      return;
