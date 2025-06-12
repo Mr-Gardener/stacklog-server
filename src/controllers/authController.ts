@@ -105,13 +105,21 @@ export const loginUser: RequestHandler = async (req, res) => {
       { expiresIn: "2h" }
     );
 
-    res.status(200).json({ 
-      token, 
-       user: {
-            id: user._id,
-            email: user.email,
-            role: user.role,
-              }
+     // ✅ Set token in httpOnly cookie
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      sameSite: "lax",   // "none" if you're using https + different domains
+      secure: false,     // true in production with HTTPS
+      maxAge: 2 * 60 * 60 * 1000, // 2 hours
+    });
+
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     const err = error as Error;

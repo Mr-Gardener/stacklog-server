@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import Author from "../models/authors";
 
-export const createAuthorAdmin = async (req: Request, res: Response) => {
+export const createAuthorAdmin = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, password } = req.body;
 
     const existingAuthor = await Author.findOne({ email });
     if (existingAuthor) {
-      return res.status(400).json({ message: "Author with this email already exists." });
+      res.status(400).json({ message: "Author with this email already exists." });
+      return;
     }
 
     const newAuthor = new Author({
@@ -37,14 +38,15 @@ export const getAllAuthors = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteAuthor = async (req: Request, res: Response) => {
+export const deleteAuthor = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
     const deletedAuthor = await Author.findByIdAndDelete(id);
 
     if (!deletedAuthor) {
-      return res.status(404).json({ message: "Author not found" });
+      res.status(404).json({ message: "Author not found" });
+      return;
     }
 
     res.status(200).json({ message: "Author deleted successfully" });

@@ -5,7 +5,7 @@ export interface IAuthor extends Document {
   profileImage?: string;
   email: string;
   password: string;
-  role: "admin" | "author";
+  role: "authorAdmin" | "author";
 }
 
 const AuthorSchema = new Schema<IAuthor>({
@@ -13,7 +13,7 @@ const AuthorSchema = new Schema<IAuthor>({
   profileImage: { type: String },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ["admin", "author"], default: "author" },
+  role: { type: String, enum: ["authorAdmin", "author"], default: "authorAdmin" },
 });
 
 const Author = mongoose.model<IAuthor>("Author", AuthorSchema);
