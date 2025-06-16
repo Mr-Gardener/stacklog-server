@@ -46,34 +46,6 @@ export const getLatestPost = async (req: Request, res: Response) => {
   }
 };
 
-// export const createPost = async (req: AuthRequest, res: Response) => {
-//   const user = (req as any).user;
-
-//   try {
-//     const { title, content, author } = req.body;
-//     const coverImageUrl = req.file?.path;
-
-//     if (!coverImageUrl) {
-//       return res.status(400).json({ message: "No image uploaded" });
-//     }
-
-//     if (!user) {
-//       return res.status(401).json({ message: "Unauthorized" });
-//     }
-
-//     const newPost = await Post.create({
-//       title,
-//       content,
-//       coverImage: coverImageUrl,
-//       author: user.id,
-//     });
-
-//     return res.status(201).json({ message: "Post created", post: newPost });
-//   } catch (error) {
-//     return res.status(500).json({ message: "Error", error: (error as Error).message });
-//   }
-// };
-
 export const createPost = async (req: AuthRequest, res: Response) => {
   try {
     const user = req.user; // Comes from verifyToken middleware

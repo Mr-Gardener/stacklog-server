@@ -4,8 +4,9 @@ import { AuthRequest } from "../types/express/index";
 import cookieParser from "cookie-parser";
 
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction) => {
-  const token = req.cookies.access_token;
-  
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.split(" ")[1] || req.cookies.access_token;
+
   if (!token) {
      res.status(401).json({ message: "No token provided" });
      return;
@@ -16,6 +17,7 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
     req.user = decoded as { id: string; role: string };
     next();
   } catch (err) {
-     res.status(401).json({ message: "Invalid token" });
+    res.status(401).json({ message: "Invalid token" });
+    return ;
   }
 };

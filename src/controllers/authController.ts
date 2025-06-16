@@ -3,32 +3,6 @@ import Admin from "../models/admin";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// export const registerAdmin: RequestHandler = async (req, res) => {
-//   try {
-//   const { email, password} = req.body;
-
-//   const existing = await Admin.findOne({ email });
-//   if (existing) {
-//     res.status(400).json({ message: "Admin already exists" });
-//     return;
-//   }
-
-//   const hashed = await bcrypt.hash(password, 12);
-
-//   const newAdmin = await Admin.create({
-//     email,
-//     password: hashed,
-//     role: "admin",
-//   });
-
-//   res.status(201).json({ message: "Admin registered" });
-// } catch (error) {
-//   const err = error as Error;
-//   console.error("Auth error:", err);
-//   res.status(500).json({ message: "Something went wrong.", error: err.message });
-//   }
-// };
-
 export const registerAdmin: RequestHandler = async (req, res) => {
 
   try {
