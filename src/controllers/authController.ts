@@ -2,9 +2,9 @@ import { RequestHandler } from "express";
 import Admin from "../models/admin";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import Author from "../models/authors";
 
 export const registerAdmin: RequestHandler = async (req, res) => {
-
   try {
     const { email, password, role } = req.body;
 
@@ -55,13 +55,18 @@ export const registerAdmin: RequestHandler = async (req, res) => {
   }
 };
 
-
-
-export const loginUser: RequestHandler = async (req, res) => {
+export const loginUnified: RequestHandler = async (req, res): Promise<void> => {
   try {
     const { email, password } = req.body;
 
-    const user = await Admin.findOne({ email });
+    let user = await Admin.findOne({ email });
+    let userType = "admin";
+
+    if (!user) {
+      user = await Author.findOne({ email });
+      userType = "author";
+    }
+
     if (!user) {
       res.status(404).json({ message: "Invalid credentials" });
       return;
@@ -79,12 +84,11 @@ export const loginUser: RequestHandler = async (req, res) => {
       { expiresIn: "2h" }
     );
 
-     // ✅ Set token in httpOnly cookie
     res.cookie("access_token", token, {
       httpOnly: true,
-      sameSite: "lax",   // "none" if you're using https + different domains
-      secure: false,     // true in production with HTTPS
-      maxAge: 2 * 60 * 60 * 1000, // 2 hours
+      sameSite: "lax",
+      secure: false,
+      maxAge: 2 * 60 * 60 * 1000,
     });
 
     res.status(200).json({
@@ -95,9 +99,10 @@ export const loginUser: RequestHandler = async (req, res) => {
         role: user.role,
       },
     });
+    return;
   } catch (error) {
-    const err = error as Error;
-    console.error("Auth error:", error);
-  res.status(500).json({ message: "Something went wrong.", error: err.message });
+    console.error("Unified login error:", error);
+    res.status(500).json({ message: "Server error" });
+    return;
   }
 };

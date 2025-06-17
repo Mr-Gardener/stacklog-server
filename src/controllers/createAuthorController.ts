@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import Author from "../models/authors";
+import bcrypt from "bcryptjs"; 
+
 
 export const createAuthorAdmin = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -11,10 +13,12 @@ export const createAuthorAdmin = async (req: Request, res: Response): Promise<vo
       return;
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10); // ✅ Hash password
+
     const newAuthor = new Author({
       name,
       email,
-      password, // You should hash this in a real app
+      password: hashedPassword,
       role: "authorAdmin",
     });
 
@@ -26,6 +30,7 @@ export const createAuthorAdmin = async (req: Request, res: Response): Promise<vo
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 export const getAllAuthors = async (req: Request, res: Response) => {
