@@ -28,8 +28,8 @@ router.post(
     createPost(req, res).catch(next);
   }
 );
-router.put("/:id",verifyToken, requireRole("admin"), updatePost);
-router.delete("/:id",verifyToken, requireRole("admin"), deletePost);
+router.put("/:id",verifyToken, requireRole("superAdmin"), updatePost);
+router.delete("/:id",verifyToken, requireRole("superAdmin"), deletePost);
 
 export default router;
 
