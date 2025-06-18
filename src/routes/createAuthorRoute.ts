@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getAuthorById,
   createAuthorAdmin,
   getAllAuthors,
   deleteAuthor,
@@ -14,6 +15,7 @@ router.post("/create-author",
   requireRole("superAdmin"), 
   createAuthorAdmin);
 router.get("/authors", verifyToken, requireRole("superAdmin"), getAllAuthors);
+router.get("/authors/:id",  verifyToken, requireRole("superAdmin"), getAuthorById);
 router.delete("/authors/:id",  verifyToken, requireRole("superAdmin"), deleteAuthor);
 
 export default router;

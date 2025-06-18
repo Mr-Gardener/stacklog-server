@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Author from "../models/authors";
-import bcrypt from "bcryptjs"; 
+import bcrypt from "bcryptjs";
+import Post from "../models/Post";
 
 
 export const createAuthorAdmin = async (req: Request, res: Response): Promise<void> => {
@@ -57,6 +58,35 @@ export const deleteAuthor = async (req: Request, res: Response): Promise<void> =
     res.status(200).json({ message: "Author deleted successfully" });
   } catch (error) {
     console.error("Delete Author Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+export const getAuthorById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const author = await Author.findById(id).lean();
+
+    if (!author) {
+       res.status(404).json({ message: "Author not found" });
+       return;
+    }
+
+    const postCount = await Post.countDocuments({ author: id });
+
+    res.status(200).json({
+      _id: author._id,
+      name: author.name,
+      email: author.email,
+      bio: author.bio,
+      profileImage: author.profileImage,
+      postCount,
+    });
+  } catch (err) {
+    console.error("Error fetching author by ID:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
