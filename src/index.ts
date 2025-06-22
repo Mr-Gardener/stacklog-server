@@ -9,6 +9,7 @@ import path from "path";
 import authRoutes from "./routes/authRoute";
 import createAuthorRoute from "./routes/createAuthorRoute"
 import cookieParser from "cookie-parser";
+import adminRoutes from "./routes/adminRoutes";
 
 
 // Load env variables
@@ -46,6 +47,12 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Routes
+
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.originalUrl}`);
+    next();
+})
+
 app.get("/", (_req, res) => {
     res.send("API is running...");
 });
@@ -62,11 +69,10 @@ app.use("/api/auth", authRoutes);
 
 app.use("/api/admin", createAuthorRoute);
 
+app.use("/api/admin", adminRoutes);
 
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.originalUrl}`);
-    next();
-})
+
+
 
 // DB + Server
 mongoose
