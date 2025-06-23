@@ -7,7 +7,10 @@ export const getAllPosts = async (req: Request, res: Response) => {
   try {
     const posts = await Post.find()
       .sort({ createdAt: -1 })
-      .populate("author", "name profileImage") ;
+      .populate({
+        path: "author",
+        select: "name profileImage",
+      })
     res.status(200).json(posts);
   } catch (error) {
     console.error("getALLposts error:", error)
@@ -17,7 +20,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
 
 export const getPost = async (req: Request, res: Response): Promise<void> => {
   try {
-    const post = await Post.findById(req.params.id).populate("author", "name profileImage");
+    const post = await Post.findById(req.params.id).populate("author", "name profileImage role");
     if (!post) {
     res.status(404).json({ message: "Post not found" });
     return;
@@ -33,7 +36,7 @@ export const getLatestPost = async (req: Request, res: Response) => {
   try {
     const latestPost = await Post.findOne()
       .sort({ createdAt: -1 })
-      .populate("author", "name profileImage");
+      .populate("author", "name profileImage role");
 
     if (!latestPost) {
       return res.status(404).json({ message: "No post found" });
@@ -48,7 +51,7 @@ export const getLatestPost = async (req: Request, res: Response) => {
 
 export const createPost = async (req: AuthRequest, res: Response) => {
   try {
-    const user = req.user; // Comes from verifyToken middleware
+    const user = req.user; 
     const { title, content, tags } = req.body;
     const coverImageUrl = req.body.coverImage;
 
@@ -66,7 +69,7 @@ export const createPost = async (req: AuthRequest, res: Response) => {
       tags: tags?.split(",").map((tag: string) => tag.trim()), 
       coverImage: coverImageUrl,
       author: user.id,
-    });
+      authorModel: user.role === "superAdmin" || user.role === "moderatorAdmin" ? "Admin" : "Author",    });
 
     return res.status(201).json({ message: "Post created successfully", post: newPost });
   } catch (error) {

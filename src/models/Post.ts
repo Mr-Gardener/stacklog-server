@@ -1,27 +1,34 @@
-import mongoose, {Document} from "mongoose";
-import  {  Schema, Types } from "mongoose";
-
+import mongoose, { Document, Schema, Types } from "mongoose";
 
 export interface IPost extends Document {
-    title: string;
-    content: string;
-    coverImage?: string;
-    tags?: string[];
-    author: Types.ObjectId;
-    createdAt: Date;
-    updatedAt: Date;
-    
+  title: string;
+  content: string;
+  coverImage: string;
+  tags?: string[];
+  author: Types.ObjectId;
+  authorModel: "Admin" | "Author";
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const PostSchema = new mongoose.Schema<IPost>(
-    {
-        title: {type: String, required: true},
-        content: {type: String, required: true },
-        coverImage: {type: String, required: true},
-        tags: {type: [String], required: true},
-        author: { type: Schema.Types.ObjectId, ref: "Author", required: true },
-    }, 
-    {timestamps: true}
+  {
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    coverImage: { type: String, required: true },
+    tags: { type: [String], required: false },
+    author: {
+      type: Schema.Types.ObjectId,
+      refPath: "authorModel", 
+      required: true,
+    },
+    authorModel: {
+      type: String,
+      enum: ["Admin", "Author"],
+      required: true,
+    },
+  },
+  { timestamps: true }
 );
 
 export default mongoose.model<IPost>("Post", PostSchema);

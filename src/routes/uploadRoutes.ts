@@ -2,26 +2,27 @@ import express from "express";
 import upload from "../middleware/multer";
 import { Request, Response } from "express";
 import util from "util";
+import multer from "multer";
 
 const router = express.Router();
 
-router.post("/", upload.single("image"), async (req: Request, res: Response): Promise<void> => {
-  try {
-    const file = req.file;
-    console.log("✅ File uploaded:", util.inspect(req.file, { showHidden: false, depth: null, colors: true }));
-
-    if (!file) {
-      res.status(400).json({ message: "No file uploaded." });
-      return;
+router.post("/", (req, res, next) => {
+  upload.single("image")(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      return res.status(400).json({ message: "Multer error: " + err.message });
+    } else if (err) {
+      return res.status(400).json({ message: err.message }); // e.g., invalid file type
     }
 
-    // This assumes you're using Cloudinary and multer-storage-cloudinary
-    res.status(200).json({ url: file.path });
-  } catch (error) {
-    console.error("❌ Image upload error:", error); // <-- Error log
-    res.status(500).json({ message: "Image upload failed", error: (error as Error).message });
-  }
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ message: "No file uploaded." });
+    }
+
+    return res.status(200).json({ url: file.path });
+  });
 });
+
 
 export default router;
 
