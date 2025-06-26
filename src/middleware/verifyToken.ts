@@ -7,15 +7,18 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
   const token = authHeader?.split(" ")[1] || req.cookies.access_token;
 
   if (!token) {
+    console.log("❌ No token provided");
      res.status(401).json({ message: "No token provided" });
      return;
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+    console.log("✅ Token verified. Decoded user:", decoded);
     req.user = decoded as { id: string; role: string };
     next();
   } catch (err) {
+    console.log("❌ Invalid token:", err);
     res.status(401).json({ message: "Invalid token" });
     return ;
   }
