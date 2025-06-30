@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Author from "../models/authors";
 
+
 export const registerAdmin: RequestHandler = async (req, res) => {
   try {
     const { email, password, role } = req.body;
@@ -36,8 +37,8 @@ export const registerAdmin: RequestHandler = async (req, res) => {
     // Create JWT token after registration
     const token = jwt.sign(
       { id: newAdmin._id, role: newAdmin.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: "2h" }
+      process.env.JWT_SECRET as string,
+      { expiresIn: "7d" }
     )
 
     res.status(201).json({
@@ -79,9 +80,13 @@ export const loginUnified: RequestHandler = async (req, res): Promise<void> => {
     }
 
     const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: "2h" }
+      {
+        id: user._id,
+        role: user.role,
+        model: user.role === "superAdmin" ? "Admin" : "Author", // matches refPath
+      },
+      process.env.JWT_SECRET as string,
+      { expiresIn: "7d" }
     );
 
     res.cookie("access_token", token, {
@@ -97,6 +102,7 @@ export const loginUnified: RequestHandler = async (req, res): Promise<void> => {
         id: user._id,
         email: user.email,
         role: user.role,
+        model: user.model,
       },
     });
     return;

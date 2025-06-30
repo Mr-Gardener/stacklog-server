@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { AuthRequest } from "../types/express/index";
 import Admin from "../models/admin";
 import Author from "../models/authors";
+import "../models/admin";     
+import "../models/authors";
 
 export const getMyProfile = async (req: AuthRequest, res: Response): Promise<void> => {
   try {

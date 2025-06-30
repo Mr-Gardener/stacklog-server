@@ -24,7 +24,7 @@ const PostSchema = new mongoose.Schema<IPost>(
     },
     authorModel: {
       type: String,
-      enum: ["Admin", "Author"],
+      enum: ["Author", "Admin"],
       required: true,
     },
   },

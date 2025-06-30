@@ -10,6 +10,8 @@ import authRoutes from "./routes/authRoute";
 import createAuthorRoute from "./routes/createAuthorRoute"
 import cookieParser from "cookie-parser";
 import adminRoutes from "./routes/adminRoutes";
+import "./models/admin";  
+import "./models/authors";  
 
 
 // Load env variables

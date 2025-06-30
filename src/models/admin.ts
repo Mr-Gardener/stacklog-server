@@ -7,11 +7,8 @@ const adminSchema = new mongoose.Schema(
     profileImage: { type: String },         
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: {
-      type: String,
-      enum: ["superAdmin", "authorAdmin", "moderatorAdmin"],
-      required: true,
-    },
+    role: {type: String, enum: ["superAdmin", "authorAdmin", "moderatorAdmin"], required: true,},
+    // model: {type: String, enum: ["superAdmin", "authorAdmin", "moderatorAdmin"], required: true,},
   },
   { timestamps: true }
 );

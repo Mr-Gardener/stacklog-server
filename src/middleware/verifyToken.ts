@@ -13,9 +13,25 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-    console.log("✅ Token verified. Decoded user:", decoded);
-    req.user = decoded as { id: string; role: string };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
+      id: string;
+      role: string;
+      model: string;
+    };
+
+    if (
+      !["superAdmin", "authorAdmin", "moderatorAdmin"].includes(decoded.role) ||
+      !["Admin", "Author"].includes(decoded.model)
+    ) {
+      res.status(403).json({ message: "Invalid token payload" });
+      return;
+    }
+
+    req.user = decoded as {
+      id: string;
+      role: "superAdmin" | "authorAdmin" | "moderatorAdmin";
+      model: "Admin" | "Author";
+    };
     next();
   } catch (err) {
     console.log("❌ Invalid token:", err);

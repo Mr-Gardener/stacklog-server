@@ -2,7 +2,8 @@ import "../models/authors";
 import { Request, Response} from "express";
 import Post from "../models/Post";
 import { AuthRequest } from "../types/express";
-
+import "../models/admin"; 
+import "../models/authors"; 
 
 
 
@@ -54,8 +55,10 @@ export const getLatestPost = async (req: Request, res: Response) => {
 
 export const createPost = async (req: AuthRequest, res: Response) => {
   try {
+    console.log("🔐 req.user =", req.user);
+
     const user = req.user; 
-    const { title, content, tags } = req.body;
+    const { title, content, tags, status, coverImage } = req.body;
     const coverImageUrl = req.body.coverImage;
 
     if (!title || !content || !coverImageUrl) {
@@ -71,8 +74,10 @@ export const createPost = async (req: AuthRequest, res: Response) => {
       content,
       tags: tags?.split(",").map((tag: string) => tag.trim()), 
       coverImage: coverImageUrl,
-      author: user.id,
-      authorModel: user.role === "superAdmin" || user.role === "moderatorAdmin" ? "Admin" : "Author",    });
+      status,
+      author: req.user!.id,
+      authorModel: req.user!.model ?? "authorAdmin",
+    });
 
     return res.status(201).json({ message: "Post created successfully", post: newPost });
   } catch (error) {

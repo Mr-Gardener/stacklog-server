@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import Author from "../models/authors";
 import bcrypt from "bcryptjs";
 import Post from "../models/Post";
+import "../models/admin";      
+import "../models/authors";
 
 
 export const createAuthorAdmin = async (req: Request, res: Response): Promise<void> => {
