@@ -134,4 +134,22 @@ export const deletePost = async (req: Request, res: Response) => {
   }
 };
 
+export const getSuggestions = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const suggestions = await Post.find({ _id: { $ne: id } })
+      .sort({ createdAt: -1 })
+      .limit(4)
+      .populate({
+        path: "author",
+        select: "name profileImage", 
+      });
+
+    res.json({ suggestions });
+  } catch (error) {
+    console.error("❌ Error fetching suggestions:", error);
+    res.status(500).json({ message: "Error fetching suggestions" });
+  }
+};
 
