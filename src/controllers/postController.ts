@@ -24,7 +24,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
 
 export const getPost = async (req: Request, res: Response): Promise<void> => {
   try {
-    const post = await Post.findById(req.params.id).populate("author", "name profileImage role");
+    const post = await Post.findById(req.params.id).populate("author", "name profileImage role bio");
     if (!post) {
     res.status(404).json({ message: "Post not found" });
     return;
@@ -55,38 +55,56 @@ export const getLatestPost = async (req: Request, res: Response) => {
 
 export const createPost = async (req: AuthRequest, res: Response) => {
   try {
-    console.log("🔐 req.user =", req.user);
+    console.log("User making the request:", req.user); 
+    
+    const user = req.user;
 
-    const user = req.user; 
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized access" });
+    }
+
     const { title, content, tags, status, coverImage } = req.body;
-    const coverImageUrl = req.body.coverImage;
 
-    if (!title || !content || !coverImageUrl) {
+    if (!title || !content || !coverImage) {
       return res.status(400).json({ message: "Title, content, and cover image are required." });
     }
 
-    if (!user) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+    const tagArray = tags?.split(",").map((tag: string) => tag.trim()) || [];
 
     const newPost = await Post.create({
       title,
       content,
-      tags: tags?.split(",").map((tag: string) => tag.trim()), 
-      coverImage: coverImageUrl,
-      status,
-      author: req.user!.id,
-      authorModel: req.user!.model ?? "authorAdmin",
+      tags: tagArray,
+      coverImage,
+      status: status || "published",
+      author: user.id,
+      authorModel: user.model ?? "Admin",
     });
 
-    return res.status(201).json({ message: "Post created successfully", post: newPost });
+    return res.status(201).json({
+      message: "Post created successfully",
+      post: {
+        _id: newPost._id,
+        title: newPost.title,
+        content: newPost.content,
+        coverImage: newPost.coverImage,
+        tags: newPost.tags,
+        status: newPost.status,
+        authorId: newPost.author, // authorId clearly exposed for author display on postPage(UI)
+        authorModel: newPost.authorModel,
+        createdAt: newPost.createdAt,
+        updatedAt: newPost.updatedAt,
+      },
+    });
   } catch (error) {
+    console.error("Post creation error:", error);
     return res.status(500).json({
       message: "Server error while creating post",
       error: (error as Error).message,
     });
   }
 };
+
 
 export const getMyPosts = async (req: AuthRequest, res: Response) => {
   try {

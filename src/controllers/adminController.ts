@@ -85,3 +85,21 @@ export const updateMyProfile = async (req: Request, res: Response) => {
      res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getPublicAuthor = async (req: Request, res: Response) => {
+  try {
+    const author = await Admin.findById(req.params.id).select("name bio profileImage");
+
+    if (!author) {
+      res.status(404).json({ message: "Author not found" });
+      return;
+    }
+
+    res.status(200).json(author);
+    return;
+  } catch (error) {
+    console.error("Error fetching author:", error);
+    res.status(500).json({ message: "Server error" });
+    return;
+  }
+};

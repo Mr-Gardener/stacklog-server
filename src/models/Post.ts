@@ -5,26 +5,28 @@ export interface IPost extends Document {
   content: string;
   coverImage: string;
   tags?: string[];
+  status?: "draft" | "published";
   author: Types.ObjectId;
   authorModel: "Admin" | "Author";
   createdAt: Date;
   updatedAt: Date;
 }
 
-const PostSchema = new mongoose.Schema<IPost>(
+const PostSchema = new Schema<IPost>(
   {
     title: { type: String, required: true },
     content: { type: String, required: true },
     coverImage: { type: String, required: true },
-    tags: { type: [String], required: false },
+    tags: { type: [String], default: [] },
+    status: { type: String, enum: ["draft", "published"], default: "published" },
     author: {
       type: Schema.Types.ObjectId,
-      refPath: "authorModel", 
+      refPath: "authorModel",
       required: true,
     },
     authorModel: {
       type: String,
-      enum: ["Author", "Admin"],
+      enum: ["Admin", "Author"],
       required: true,
     },
   },

@@ -11,7 +11,7 @@ import createAuthorRoute from "./routes/createAuthorRoute"
 import cookieParser from "cookie-parser";
 import adminRoutes from "./routes/adminRoutes";
 import "./models/admin";  
-import "./models/authors";  
+import "./models/authors"; 
 
 
 // Load env variables
@@ -72,9 +72,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin", createAuthorRoute);
 
 app.use("/api/admin", adminRoutes);
-
-
-
 
 // DB + Server
 mongoose
