@@ -21,28 +21,15 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middlewares
-// const allowedOrigins = [
-//     'http://localhost:5173']
-
-// const corsOptions = {
-//     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-//         if(!origin || allowedOrigins.includes(origin)) {
-//             callback(null, true);
-//         } else {
-//             callback(new Error("not allowed by CORS"))
-//         }
-//     },
-//     Credentials: true,
-// };
-
-// app.use(cors(corsOptions));
-
-
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://stacklog-client.vercel.app", // Default Vercel domain 
+  "https://stacklog-client-a58uc9ren-ifechukwu-saltinas-projects.vercel.app/",
+];
 
 app.use(cors({
-  origin: "http://localhost:5173",   // your Vite dev origin
-  credentials: true,                 // this is required for cookies/auth
+  origin: allowedOrigins,
+  credentials: true,
 }));
 
 app.use(cookieParser());
