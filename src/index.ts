@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
   "http://localhost:5173",
   "https://stacklog-client.vercel.app", // Default Vercel domain 
-  "https://stacklog-client-fdoxyl43a-ifechukwu-saltinas-projects.vercel.app",
+  "https://stacklog-client-og7gfyyxn-ifechukwu-saltinas-projects.vercel.app/",
 ];
 
 app.use(cors({
