@@ -86,8 +86,8 @@ export const loginUnified: RequestHandler = async (req, res): Promise<void> => {
 
     res.cookie("access_token", token, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
+      sameSite: "none",
+      secure: true,
       maxAge: 2 * 60 * 60 * 1000,
     });
 
