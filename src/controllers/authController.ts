@@ -7,7 +7,7 @@ import Author from "../models/authors";
 
 export const registerAdmin: RequestHandler = async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const { name, email, password} = req.body;
 
     const existing = await Admin.findOne({ email });
     if (existing) {
@@ -22,13 +22,8 @@ export const registerAdmin: RequestHandler = async (req, res) => {
     const adminCount = await Admin.countDocuments();
     const assignedRole = adminCount === 0 ? "superAdmin" : "authorAdmin";
 
-    console.log("Register Admin called with body:", {
-      email,
-      requestedRole: req.body.role, // what frontend tried to send
-      assignedRole, // what backend will use
-    });
-
     const newAdmin = await Admin.create({
+      name,
       email,
       password: hashed,
       role: assignedRole,
@@ -42,7 +37,7 @@ export const registerAdmin: RequestHandler = async (req, res) => {
     )
 
     res.status(201).json({
-      message: `${role} registered successfully.`,
+      message: `${assignedRole} registered successfully.`,
       token,
       user: {
         id: newAdmin._id,
