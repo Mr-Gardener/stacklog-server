@@ -1,5 +1,6 @@
 import express from "express";
 import { registerAdmin, loginUnified } from "../controllers/authController";
+import { verifyToken } from "../middleware/verifyToken";
 
 const router = express.Router();
 
@@ -8,6 +9,15 @@ router.post("/register", registerAdmin);
 
 // Login for both superAdmin and authorAdmin
 router.post("/login", loginUnified);
+
+router.get("/me", verifyToken, (req, res) => {
+  // Return only the user info from the token
+  res.status(200).json({
+    id: req.user?.id,
+    role: req.user?.role,
+    model: req.user?.model,
+  });
+});
 
 // Logout and clear token cookie
 router.post("/logout", (_req, res) => {
