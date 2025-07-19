@@ -1,6 +1,8 @@
 import express from "express";
 import { registerAdmin, loginUnified } from "../controllers/authController";
 import { verifyToken } from "../middleware/verifyToken";
+import Admin from "../models/admin";
+import Author from "../models/authors";
 
 const router = express.Router();
 
@@ -10,14 +12,21 @@ router.post("/register", registerAdmin);
 // Login for both superAdmin and authorAdmin
 router.post("/login", loginUnified);
 
-router.get("/me", verifyToken, (req, res) => {
-  // Return only the user info from the token
-  res.status(200).json({
-    id: req.user?.id,
-    role: req.user?.role,
-    model: req.user?.model,
-  });
+router.get("/me", verifyToken, async (req, res) => {
+  const { id, role, model } = req.user!;
+
+  let user;
+  if (model === "Admin") {
+    user = await Admin.findById(id).select("-password");
+  } else {
+    user = await Author.findById(id).select("-password");
+  }
+
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  res.status(200).json({ user }); // this way frontend can use res.data.user
 });
+
 
 // Logout and clear token cookie
 router.post("/logout", (_req, res) => {
