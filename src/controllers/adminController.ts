@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
-import { AuthRequest } from "../types/express/index";
 import Admin from "../models/admin";
 import Author from "../models/authors";
 import "../models/admin";     
 import "../models/authors";
 
-export const getMyProfile = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getMyProfile = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = req.user;
 
@@ -46,7 +45,7 @@ export const getMyProfile = async (req: AuthRequest, res: Response): Promise<voi
 
 export const updateMyProfile = async (req: Request, res: Response) => {
   try {
-    const user = (req as AuthRequest).user;
+    const user = req.user;
 
     if (!user || !user.id || !user.role) {
        res.status(401).json({ message: "Unauthorized" });

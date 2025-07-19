@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 import Comment from "../models/Comment";
 import Post from "../models/Post";
-import { AuthRequest } from "../types/express";
 import "../models/admin";     
 import "../models/authors";
 
@@ -74,7 +73,7 @@ export const createComment = async (req: Request, res: Response) => {
   }
 };
 
-export const getMyPostComments = async (req: AuthRequest, res: Response) => {
+export const getMyPostComments = async (req: Request, res: Response) => {
   try {
     console.log("🔍 User:", req.user);
     console.log("User ID:", req.user?.id);

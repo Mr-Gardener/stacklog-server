@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
-import { AuthRequest } from "../types/express/index";
 import Admin from "../models/admin";
 import Post from "../models/Post";
 import Comment from "../models/Comment";
 import "../models/admin";      
 import "../models/authors";
 
-export const getAuthorDashboardStats = async (req: AuthRequest, res: Response) => {
+export const getAuthorDashboardStats = async (req: Request, res: Response) => {
   try {
     const authorId = req.user?.id;
 

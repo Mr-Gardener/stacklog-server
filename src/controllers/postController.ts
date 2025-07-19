@@ -1,7 +1,6 @@
 import "../models/authors"; 
 import { Request, Response} from "express";
 import Post from "../models/Post";
-import { AuthRequest } from "../types/express";
 import "../models/admin"; 
 import "../models/authors"; 
 
@@ -53,7 +52,7 @@ export const getLatestPost = async (req: Request, res: Response) => {
   }
 };
 
-export const createPost = async (req: AuthRequest, res: Response) => {
+export const createPost = async (req: Request, res: Response) => {
   try {
     console.log("User making the request:", req.user); 
     
@@ -106,7 +105,7 @@ export const createPost = async (req: AuthRequest, res: Response) => {
 };
 
 
-export const getMyPosts = async (req: AuthRequest, res: Response) => {
+export const getMyPosts = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized - No user in request" });
