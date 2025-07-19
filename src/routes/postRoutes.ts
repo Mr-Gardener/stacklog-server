@@ -11,7 +11,6 @@ import {
 } from "../controllers/postController";
 import { verifyToken } from "../middleware/verifyToken";
 import { requireRole } from "../middleware/requireRole";
-import { AuthRequest } from "../types/express";
 import { Response, Request, NextFunction } from "express";
 import Post from "../models/Post";
 
@@ -52,7 +51,7 @@ router.get("/latest", (req, res, next) => {
   getLatestPost(req, res)
   .catch(next);
 });
-router.get("/my-posts", verifyToken, async (req: AuthRequest, res: Response, next) => {
+router.get("/my-posts", verifyToken, async (req: Request, res: Response, next) => {
   console.log("🔹 /api/posts/my-posts HIT");
 
   try {
