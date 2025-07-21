@@ -1,5 +1,5 @@
 import "../models/authors"; 
-import { Request, Response} from "express";
+import { Request, Response} from "express-serve-static-core";
 import Post from "../models/Post";
 import "../models/admin"; 
 import "../models/authors"; 

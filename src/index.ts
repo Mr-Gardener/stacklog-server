@@ -12,6 +12,7 @@ import cookieParser from "cookie-parser";
 import adminRoutes from "./routes/adminRoutes";
 import "./models/admin";  
 import "./models/authors";
+import type {} from "./types/express"; 
 
 
 // Load env variables
