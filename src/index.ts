@@ -21,20 +21,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// const allowedOrigins = [
-//   "http://localhost:5173",
-//   "https://stacklog-client.vercel.app", // Default Vercel domain 
-//   "https://stacklog-client-neiqnx4n7-ifechukwu-saltinas-projects.vercel.app",
-// ];
-
-// app.use(cors({
-//   origin: allowedOrigins,
-//   credentials: true,
-// }));
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://stacklog-client.vercel.app"
+];
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || origin === "http://localhost:5173" || origin.endsWith(".vercel.app")) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
@@ -43,12 +37,10 @@ app.use(cors({
   credentials: true,
 }));
 
-
 app.use(cookieParser());
 app.use(express.json());
 
 // Routes
-
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.originalUrl}`);
     next();

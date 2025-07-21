@@ -84,10 +84,12 @@ export const loginUnified: RequestHandler = async (req, res): Promise<void> => {
       { expiresIn: "7d" }
     );
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.cookie("access_token", token, {
       httpOnly: true,
-      sameSite: "none",
-      secure: true,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
       maxAge: 2 * 60 * 60 * 1000,
     });
 

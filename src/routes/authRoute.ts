@@ -5,6 +5,7 @@ import Admin from "../models/admin";
 import Author from "../models/authors";
 
 const router = express.Router();
+const isProduction = process.env.NODE_ENV === "production";
 
 // Register a new authorAdmin
 router.post("/register", registerAdmin);
@@ -32,8 +33,8 @@ router.get("/me", verifyToken, async (req, res) => {
 router.post("/logout", (_req, res) => {
   res.clearCookie("access_token", {
     httpOnly: true,
-    sameSite: "lax", // Adjust based on your frontend/backend config
-    secure: process.env.NODE_ENV === "production",
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,
   });
   res.status(200).json({ message: "Logged out successfully" });
 });
