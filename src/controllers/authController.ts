@@ -84,17 +84,9 @@ export const loginUnified: RequestHandler = async (req, res): Promise<void> => {
       { expiresIn: "7d" }
     );
 
-    const isProduction = process.env.NODE_ENV === "production";
-
-    res.cookie("access_token", token, {
-      httpOnly: true,
-      sameSite: isProduction ? "none" : "lax",
-      secure: isProduction,
-      maxAge: 2 * 60 * 60 * 1000,
-    });
-
     res.status(200).json({
       message: "Login successful",
+      token, // Send token to frontend
       user: {
         id: user._id,
         email: user.email,
